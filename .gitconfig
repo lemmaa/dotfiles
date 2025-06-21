@@ -1,0 +1,45 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
+[user]
+	name = Sung-Jae Lee
+	email = sjlee@mail.com
+[core]
+	excludesfile = /Users/sjlee/.gitignore_global
+	pager = delta
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Users/sjlee/Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[push]
+	default = matching
+[credential]
+	helper = cache --timeout=31536000
+[color]
+	ui = auto
+[alias]
+  pr = "!f() { git fetch -fu ${2:-upstream} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+  pr-clean = "!git checkout master ; git for-each-ref refs/heads/pr/* --format=\"%(refname)\" | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[merge]
+	tool = vimdiff
+	conflictStyle = zdiff3
+[mergetool]
+	prompt = false
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+  line-numbers = true
+  #side-by-side = true
+
+[commit]
+	template = /Users/sjlee/.stCommitMsg
