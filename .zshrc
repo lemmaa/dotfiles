@@ -36,19 +36,12 @@ if [ ! -d "$HOME/.fzf" ] && ! command -v fzf >/dev/null 2>&1; then
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install
 fi
+#export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
+export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-if [ -e "$HOME/.fzf" ]; then
-  if [[ ! "$PATH" == */.fzf/bin* ]]; then
-    PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
-  fi
-
-  #export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
-  export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
-  source <(fzf --zsh)
-
-  # fzf-git
-  source $SCRIPT_DIR/fzf-git.sh/fzf-git.sh
-fi
+# fzf-git
+source $SCRIPT_DIR/fzf-git.sh/fzf-git.sh
 
 # zsh-completions
 if type brew &>/dev/null; then
