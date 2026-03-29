@@ -151,22 +151,35 @@ if [ ! -d "$HOME/.fzf" ] && ! command -v fzf >/dev/null 2>&1; then
   ~/.fzf/install
 fi
 #export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
-export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
+#export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # fzf-git
 source $SCRIPT_DIR/fzf-git.sh/fzf-git.sh
 
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba shell init' !!
+export MAMBA_EXE='/home/sjlee/miniforge3/bin/mamba';
+export MAMBA_ROOT_PREFIX='/home/sjlee/miniforge3';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias mamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/sjlee/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/sjlee/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/sjlee/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/sjlee/miniconda3/etc/profile.d/conda.sh"
+    if [ -f "/home/sjlee/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/sjlee/miniforge3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/sjlee/miniconda3/bin:$PATH"
+        export PATH="/home/sjlee/miniforge3/bin:$PATH"
     fi
 fi
 unset __conda_setup
