@@ -1,3 +1,6 @@
+SCRIPT_PATH=${(%):-%N}
+SCRIPT_DIR=${SCRIPT_PATH:A:h}
+
 # Load version control information
 autoload -Uz vcs_info
 precmd() { vcs_info }
@@ -29,9 +32,23 @@ unset __conda_setup
 conda config --set auto_activate true
 
 # fzf
-#export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
-export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
-source <(fzf --zsh)
+if [ ! -d "$HOME/.fzf" ] && ! command -v fzf >/dev/null 2>&1; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+fi
+
+if [ -e "$HOME/.fzf" ]; then
+  if [[ ! "$PATH" == */.fzf/bin* ]]; then
+    PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
+  fi
+
+  #export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
+  export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
+  source <(fzf --zsh)
+
+  # fzf-git
+  source $SCRIPT_DIR/fzf-git.sh/fzf-git.sh
+fi
 
 # zsh-completions
 if type brew &>/dev/null; then
@@ -39,8 +56,6 @@ if type brew &>/dev/null; then
   autoload -Uz compinit
   compinit
 fi
-
-source ~/Workspace/fzf-git.sh/fzf-git.sh
 
 # nvm
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"

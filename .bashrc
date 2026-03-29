@@ -1,3 +1,6 @@
+SCRIPT_PATH="$(realpath "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -129,7 +132,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-[ -f ~/.bash_aliases ] source ~/.bash_aliases
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -143,7 +146,23 @@ if ! shopt -oq posix; then
 fi
 
 # fzf
-eval "$(fzf --bash)"
+if [ ! -d "$HOME/.fzf" ]; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+fi
+
+if [ -e "$HOME/.fzf" ]; then
+  if [[ ! "$PATH" == */.fzf/bin* ]]; then
+    PATH="${PATH:+${PATH}:}${HOME}/.fzf/bin"
+  fi
+
+  #export FZF_CTRL_T_COMMAND='(git ls-tree -r --name-only HEAD || fd -I --hidden --exclude .git) 2> /dev/null'
+  export FZF_CTRL_T_COMMAND='(fd -I --hidden) 2> /dev/null'
+  eval "$(fzf --bash)"
+
+  # fzf-git
+  source $SCRIPT_DIR/fzf-git.sh/fzf-git.sh
+fi
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
